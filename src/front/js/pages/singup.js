@@ -1,14 +1,13 @@
-import React, { useContext,useState } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
 
-export const Home = () => {
+export const Singup = () => {
 	const { store, actions } = useContext(Context);
-	const [username,setUser]=useState("")
+    const [username,setUsername]=useState("")
     const [password,setPassword]=useState("")
-	const Login = () =>{
-        fetch("https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/login",{
+    const singup = ()=>{
+        fetch('https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/user',{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -19,12 +18,12 @@ export const Home = () => {
               return resp.json();
           })
           .then(data => {
-            localStorage.setItem("jwt-token",data.token)
+            window.location = '/';
           })
           .catch(error => {
               console.log(error);
           });
-	}
+    }
 	return (
 		<div className="wrapper">
             <div className="logo">
@@ -36,20 +35,17 @@ export const Home = () => {
             <div className="p-3 mt-3">
                 <div className="form-field d-flex align-items-center">
                     <span className="far fa-user"></span>
-                    <input type="text" name="userName"
-					onChange={(e)=>{setUser(e.target.value)}}
-					id="userName" placeholder="Username" />
+                    <input type="text" 
+                    onChange={(e)=>{setUsername(e.target.value)}}
+                     name="userName" id="userName" placeholder="Username" />
                 </div>
                 <div className="form-field d-flex align-items-center">
                     <span className="fas fa-key"></span>
-                    <input type="password" 
-					onChange={(e)=>{setPassword(e.target.value)}}
-					name="password" id="pwd" placeholder="Password" />
+                    <input type="password"
+                    onChange={(e)=>{setPassword(e.target.value)}}
+                    name="password" id="pwd" placeholder="Password" />
                 </div>
-                <b className="btn mt-3" onClick={()=>Login()}>Login</b>
-            </div>
-            <div className="text-center fs-6">
-                <a href="#">Sign up</a>
+                <b className="btn mt-3" onClick={()=>singup()} >Registrer</b>
             </div>
         </div>
 	);

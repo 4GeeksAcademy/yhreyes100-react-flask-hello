@@ -2,15 +2,16 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, jsonify,request,url_for,send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db,User
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
-
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -31,6 +32,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
+
+# Configura la extensión Flask-JWT-Extended
+app.config["JWT_SECRET_KEY"] = "super19"  # ¡Cambia las palabras "super-secret" por otra cosa!
+jwt = JWTManager(app)
+
+CORS(app)
+
+
 # add the admin
 setup_admin(app)
 
@@ -40,7 +49,10 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
+
+
 # Handle/serialize errors like a JSON object
+
 
 
 @app.errorhandler(APIException)
@@ -67,6 +79,39 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    users = list(map(lambda x: x.serialize(), users))
+    response_body = {
+    "users":users
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/user', methods=['POST'])
+def create_user():
+    data =  request.json
+    user1 = User(username=data["username"], password=data["password"])
+    db.session.add(user1)
+    db.session.commit()
+    users = User.query.all()
+    users = list(map(lambda x: x.serialize(), users))
+    response_body = {
+    "users":users
+    }
+
+    return jsonify(response_body), 200
+
+
+
+
+@app.route('/login', methods=['POST'])
+def token():
+    user = User.query.filter_by(username=request.json["username"], password=request.json["password"]).first()
+    access_token=create_access_token(identity=user.username)
+    return jsonify({"token":access_token,"user":user.username}),200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
