@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 export const Singup = () => {
 	const { store, actions } = useContext(Context);
@@ -48,6 +48,9 @@ export const Singup = () => {
                     name="password" id="pwd" placeholder="Password" />
                 </div>
                 <b className="btn mt-3" onClick={()=>singup()} >Registrer</b>
+            </div>
+            <div className="text-center fs-6">
+            <Link to="/">Login</Link>
             </div>
         </div>
 	);
