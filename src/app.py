@@ -81,7 +81,10 @@ def serve_any_other_file(path):
 
 
 @app.route('/users', methods=['GET'])
+@jwt_required()
 def get_users():
+    logged_user = get_jwt_identity();
+    user = User.query.filter_by(username=logged_user).first()
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
     response_body = {

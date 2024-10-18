@@ -2,11 +2,13 @@ import React, { useContext,useState } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
+import { useNavigate,Link } from "react-router-dom";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [username,setUser]=useState("")
     const [password,setPassword]=useState("")
+    const navigate = useNavigate();
 	const Login = () =>{
         fetch("https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/login",{
             method: "POST",
@@ -20,6 +22,7 @@ export const Home = () => {
           })
           .then(data => {
             localStorage.setItem("jwt-token",data.token)
+            navigate("/users") 
           })
           .catch(error => {
               console.log(error);
@@ -49,7 +52,7 @@ export const Home = () => {
                 <b className="btn mt-3" onClick={()=>Login()}>Login</b>
             </div>
             <div className="text-center fs-6">
-                <a href="#">Sign up</a>
+            <Link to="/singup">Singup</Link>
             </div>
         </div>
 	);

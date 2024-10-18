@@ -1,11 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
+import { useNavigate } from "react-router-dom";
 
 export const Singup = () => {
 	const { store, actions } = useContext(Context);
     const [username,setUsername]=useState("")
     const [password,setPassword]=useState("")
+    const navigate = useNavigate();
     const singup = ()=>{
         fetch('https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/user',{
             method: "POST",
@@ -18,7 +20,7 @@ export const Singup = () => {
               return resp.json();
           })
           .then(data => {
-            window.location = '/';
+           navigate('/')
           })
           .catch(error => {
               console.log(error);
