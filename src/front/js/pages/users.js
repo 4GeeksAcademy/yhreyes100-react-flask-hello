@@ -21,8 +21,7 @@ export const Users = () => {
            setUsers(data.users)
         })
         .catch(err => console.error(err));    
-        if(!resp.ok || resp.status ===403  || resp.status ===401  || resp.status ===400)
-            navigate('/')     
+       
        }
        getUsers();
     },[])
