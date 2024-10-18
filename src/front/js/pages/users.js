@@ -1,13 +1,14 @@
 import React, { useContext,useEffect,useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import { Link } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 export const Users = () => {
 	const { store, actions } = useContext(Context);
     const [users,setUsers]= useState([])
+    const navigate = useNavigate()
     useEffect(()=>{
-       const getUsers=()=>{
-        fetch("https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/users",{
+       const getUsers= async ()=>{
+        const resp = await fetch("https://glowing-rotary-phone-vgw979jwpwphwr4x-3001.app.github.dev/users",{
             method:"GET",
             headers:{
                 "Content-Type":"application/json",
@@ -19,10 +20,11 @@ export const Users = () => {
             console.log(data.users)
            setUsers(data.users)
         })
-        .catch(err => console.error(err))
+        .catch(err => console.error(err));    
+        if(!resp.ok || resp.status ===403  || resp.status ===401  || resp.status ===400)
+            navigate('/')     
        }
        getUsers();
-
     },[])
 	return (
 		<>
